@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% block title %}
+Client Get Page
+{% endblock %}
+{% block content %}
+    <section>
+        <div class="container-fluid">
+            <div class="row" style="height: 100vh;">
+                <div class="col-2" style="background-color: darkblue;">
+                    <div class="w-100 my-5">
+                        <h1 class="display-6 text-center text-white">Gold House</h1>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('home_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Bosh sahifa</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('client_list_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Mijozlar</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('dealer_list_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Dillerlar</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('salary_list_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Ish haqi</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('consumption_list_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Harajatlar</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('product_list_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Mahsulotlar</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('invoice_list_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Hisob faktura</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('worker_list_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Ishchi</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('profile_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Profil</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('logout_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover-logout"
+                            style="font-size: 20px;">Chiqish</a>
+                    </div>
+                </div>
+                <div class="col-10">
+                    <div class="col-10 mx-auto" style="margin-top: 50px;">
+                        <h1 class="display-6 text-center">Client Details</h1>
+                        <div class="col-10 mx-auto mb-4">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>Full Name</th>
+                                    <td>{{ client.full_name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Phone Number</th>
+                                    <td>{{ client.phone_number }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Role</th>
+                                    <td>{{ client.role }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Client Total Debt</th>
+                                    <td>{{ client_total_debt }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Created At</th>
+                                    <td>{{ client.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                </tr>
+                            </table>
+                            <h1 class="display-6 text-center mt-5">Client Debt List</h1>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Lom</th>
+                                    <th>Comment</th>
+                                    <th>Created At</th>
+                                    <th>Action
+                                        <a href="{{ url_for('client_debt_create_page') }}" class="btn btn-success float-right">Add</a>
+                                    </th>
+                                </tr>
+                                {% for client_debt in client_debt_list %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ client_debt.lom }}</td>
+                                        <td>{{ client_debt.comment }}</td>
+                                        <td>{{ client_debt.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                        <td>
+                                            <a href="{{ url_for('client_debt_delete_page', client_debt_id=client_debt.id) }}" class="btn btn-danger">Delete</a>
+                                            <a href="{{ url_for('client_debt_update_page', client_debt_id=client_debt.id) }}" class="btn btn-warning">Update</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                {% if client_debt_list|length == 0 %}
+                                    <tr>
+                                        <td colspan="5" class="text-center">No client debts found.</td>
+                                    </tr>
+                                {% endif %}
+                            </table>
+                            <a href="{{ url_for('client_list_page') }}" class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover btn-primary" style="font-size: 20px;">Back</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

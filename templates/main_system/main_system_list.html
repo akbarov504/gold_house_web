@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block title %}
+Main System List Page
+{% endblock %}
+{% block content %}
+    <section>
+        <div class="container-fluid">
+            <div class="row" style="height: 100vh;">
+                <div class="col-2" style="background-color: darkblue;">
+                    <div class="w-100 my-5">
+                        <h1 class="display-6 text-center text-white">Gold House</h1>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('home_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Bosh sahifa</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('client_list_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Mijozlar</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('dealer_list_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Dillerlar</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('salary_list_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Ish haqi</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('consumption_list_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Harajatlar</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('product_list_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Mahsulotlar</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('invoice_list_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Hisob faktura</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('worker_list_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Ishchi</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('profile_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Profil</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('logout_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover-logout"
+                            style="font-size: 20px;">Chiqish</a>
+                    </div>
+                </div>
+                <div class="col-10">
+                    <div class="col-12 mx-auto mt-5">
+                        <h1 class="display-6 text-center">Main System List Page</h1>
+                        <a href="{{ url_for('main_system_create_page') }}" class="btn btn-primary float-right">Add Main System</a>
+                    </div>
+                    <div class="col-12 mx-auto d-flex flex-wrap" style="margin-top: 150px;">
+                        {% for main_system in main_system_list %}
+                        <div class="col-4">
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <h5 class="card-title">Lom: {{ main_system.lom }}</h5>
+                                    <p class="card-text">Comment: {{ main_system.comment }}</p>
+                                    <p class="card-text">Created At: {{ main_system.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="{{ url_for('main_system_update_page', main_system_id=main_system.id) }}" class="btn btn-warning">Update</a>
+                                    <a href="{{ url_for('main_system_delete_page', main_system_id=main_system.id) }}" class="btn btn-danger">Delete</a>
+                                    <a href="{{ url_for('main_system_get_page', main_system_id=main_system.id) }}" class="btn btn-primary">Get</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% if main_system_list|length == 0 %}
+                        <h4 class="mx-auto text-muted">Main System not found</h4>
+                        {% endif %}
+                        <div class="col-12 mx-auto mt-4 d-flex justify-content-center">
+                            <a href="{{ url_for('home_page') }}" class="btn btn-primary col-3">Back</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}
+Dealer Update Page
+{% endblock %}
+{% block content %}
+<section>
+    <div class="container">
+        <div class="row justify-content-center align-items-center" style="height: 100vh;">
+            <div class="col-6">
+                <p class="text-center text-muted mt-3" style="font-size: 40px; font-weight: 300;">Dealer Update Page</p>
+                <form method="post" class="col-12">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group">
+                        {{ form.full_name.label(style="font-size: 20px") }}
+                        {{ form.full_name(class="form-control", placeholder="full name", style="font-size: 20px") }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.username.label(style="font-size: 20px") }}
+                        {{ form.username(class="form-control", placeholder="username", style="font-size: 20px") }}
+                    </div>
+                    <div class="form-group mt-4">
+                        {{ form.phone_number.label(style="font-size: 20px") }}
+                        {{ form.phone_number(class="form-control", placeholder="phone number", style="font-size: 20px") }}
+                    </div>
+                    <div class="form-group mt-4">
+                        {{ form.password.label(style="font-size: 20px") }}
+                        {{ form.password(class="form-control", placeholder="password", style="font-size: 20px") }}
+                    </div>
+                    {{ form.submit(class='btn btn-primary w-100', style='background-color: darkblue; outline: none !important; box-shadow: none !important; border: 0; font-size: 22px;') }}
+                    <a href="{{ url_for('dealer_list_page') }}" class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover btn-primary mt-3" style="font-size: 20px;">Back</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}
+Invoice Delete Page
+{% endblock %}
+{% block content %}
+<section>
+    <div class="container">
+        <div class="row justify-content-center align-items-center" style="height: 100vh;">
+            <div class="col-6">
+                <p class="text-center text-muted mt-3" style="font-size: 40px; font-weight: 300;">Invoice Delete Page</p>
+                <form method="post" class="col-12">
+                    <button type="submit" class="w-100 rounded py-2 text-center text-white btn btn-danger" style="font-size: 20px;">Yes</button>
+                    <a href="{{ url_for('invoice_list_page') }}" class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover btn-primary mt-3" style="font-size: 20px;">Back</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

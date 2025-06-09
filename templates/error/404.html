@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}
+404 Sahifa
+{% endblock %}
+{% block content %}
+    <section>
+        <div class="container">
+            <div class="row justify-content-center align-items-center flex-column" style="height: 100vh;">
+                <h1 class="display-3">Sahifa topilmadi</h1>
+                <a href="{{ url_for('home_page') }}" class="text-muted text-decoration-none">Bosh sahifaga qaytish</a>
+            </div>
+        </div>
+    </section>
+{% endblock %}

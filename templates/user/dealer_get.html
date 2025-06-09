@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% block title %}
+Dealer Get Page
+{% endblock %}
+{% block content %}
+    <section>
+        <div class="container-fluid">
+            <div class="row" style="height: 100vh;">
+                <div class="col-2" style="background-color: darkblue;">
+                    <div class="w-100 my-5">
+                        <h1 class="display-6 text-center text-white">Gold House</h1>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('home_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Bosh sahifa</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('client_list_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Mijozlar</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('dealer_list_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Dillerlar</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('salary_list_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Ish haqi</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('consumption_list_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Harajatlar</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('product_list_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Mahsulotlar</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('invoice_list_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Hisob faktura</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('worker_list_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Ishchi</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('profile_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Profil</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('logout_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover-logout"
+                            style="font-size: 20px;">Chiqish</a>
+                    </div>
+                </div>
+                <div class="col-10">
+                    <div class="col-12 mx-auto" style="margin-top: 50px;">
+                        <h1 class="display-6 text-center">Dealer Details</h1>
+                        <div class="col-10 mx-auto mb-4">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>Full Name</th>
+                                    <td>{{ dealer.full_name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Username</th>
+                                    <td>{{ dealer.username }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Phone Number</th>
+                                    <td>{{ dealer.phone_number }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Password</th>
+                                    <td>{{ dealer.password }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Role</th>
+                                    <td>{{ dealer.role }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Invoice Count</th>
+                                    <td>{{ invoice_list|length }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Created At</th>
+                                    <td>{{ dealer.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                </tr>
+                            </table>
+                            <h1 class="display-6 text-center mt-5">Invoice List</h1>
+                            <form class="form-inline my-4 float-left" method="get" action="{{ url_for('dealer_get_page', dealer_id=dealer.id, query=name) }}">
+                                <select name="select_type" id="select_type" class="form-control mr-sm-2" onchange="this.form.submit()">
+                                    <option value="ALL" selected>Select Type</option>
+                                    <option value="ALL">ALL</option>
+                                    <option value="NEW">NEW</option>
+                                    <option value="COMPLETED">COMPLETED</option>
+                                </select>
+                            </form>
+                            <form class="form-inline my-4 float-right" method="get" action="{{ url_for('dealer_get_page', dealer_id=dealer.id, query=name) }}">
+                                <select name="select_month" id="select_month" class="form-control mr-sm-2" onchange="this.form.submit()">
+                                    <option value="ALL" selected>Select Month</option>
+                                    <option value="ALL">ALL</option>
+                                    <option value="JANUARY">JANUARY</option>
+                                    <option value="FEBRUARY">FEBRUARY</option>
+                                    <option value="MARCH">MARCH</option>
+                                    <option value="APRIL">APRIL</option>
+                                    <option value="MAY">MAY</option>
+                                    <option value="JUNE">JUNE</option>
+                                    <option value="JULY">JULY</option>
+                                    <option value="AUGUST">AUGUST</option>
+                                    <option value="SEPTEMBER">SEPTEMBER</option>
+                                    <option value="OCTOBER">OCTOBER</option>
+                                    <option value="NOVEMBER">NOVEMBER</option>
+                                    <option value="DECEMBER">DECEMBER</option>
+                                </select>
+                            </form>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Invoice Number</th>
+                                    <th>Status</th>
+                                    <th>Total Price</th>
+                                    <th>Created At</th>
+                                    <th>Action
+                                        <a href="{{ url_for('invoice_product_create_page') }}" class="btn btn-success float-right">Add</a>
+                                    </th>
+                                </tr>
+                                {% for invoice in invoice_list %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ invoice.invoice_number }}</td>
+                                        <td>{{ invoice.status }}</td>
+                                        <td>{{ invoice.total_price }}</td>
+                                        <td>{{ invoice.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                        <td>
+                                            <a href="{{ url_for('invoice_delete_page', invoice_id=invoice.id) }}" class="btn btn-danger">Delete</a>
+                                            <a href="{{ url_for('invoice_update_page', invoice_id=invoice.id) }}" class="btn btn-warning">Update</a>
+                                            <a href="{{ url_for('invoice_get_page', invoice_id=invoice.id) }}" class="btn btn-primary">Get</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                {% if invoice_list|length == 0 %}
+                                    <tr>
+                                        <td colspan="6" class="text-center">No invoices found.</td>
+                                    </tr>
+                            {% endif %}
+                            </table>
+                            <a href="{{ url_for('dealer_list_page') }}" class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover btn-primary" style="font-size: 20px;">Back</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

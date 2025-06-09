@@ -1,0 +1,10 @@
+flask
+flask-login
+flask-wtf
+flask-sqlalchemy
+psycopg2-binary
+flask-migrate
+flask-bcrypt
+qrcode
+pillow
+bokeh

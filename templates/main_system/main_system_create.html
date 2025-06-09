@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}
+Main System Create Page
+{% endblock %}
+{% block content %}
+<section>
+    <div class="container">
+        <div class="row justify-content-center align-items-center" style="height: 100vh;">
+            <div class="col-6">
+                <p class="text-center text-muted mt-3" style="font-size: 40px; font-weight: 300;">Main System Create Page</p>
+                <form method="post" class="col-12">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group">
+                        {{ form.lom.label(style="font-size: 20px") }}
+                        {{ form.lom(class="form-control", placeholder="lom", style="font-size: 20px") }}
+                    </div>
+                    <div class="form-group mt-4">
+                        {{ form.comment.label(style="font-size: 20px") }}
+                        {{ form.comment(class="form-control", placeholder="comment", style="font-size: 20px") }}
+                    </div>
+                    {{ form.submit(class='btn btn-primary w-100', style='background-color: darkblue; outline: none !important; box-shadow: none !important; border: 0; font-size: 22px;') }}
+                    <a href="{{ url_for('main_system_list_page') }}" class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover btn-primary mt-3" style="font-size: 20px;">Back</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

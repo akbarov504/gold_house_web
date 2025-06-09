@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% block title %}
+Invoice Get Page
+{% endblock %}
+{% block content %}
+    <section>
+        <div class="container-fluid">
+            <div class="row" style="height: 100vh;">
+                <div class="col-2" style="background-color: darkblue;">
+                    <div class="w-100 my-5">
+                        <h1 class="display-6 text-center text-white">Gold House</h1>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('home_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Bosh sahifa</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('client_list_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Mijozlar</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('dealer_list_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Dillerlar</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('salary_list_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Ish haqi</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('consumption_list_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Harajatlar</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('product_list_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Mahsulotlar</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('invoice_list_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Hisob faktura</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('worker_list_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Ishchi</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('profile_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                            style="font-size: 20px;">Profil</a>
+                    </div>
+                    <div class="col-10 mx-auto my-4">
+                        <a href="{{ url_for('logout_page') }}"
+                            class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover-logout"
+                            style="font-size: 20px;">Chiqish</a>
+                    </div>
+                </div>
+                <div class="col-10">
+                    <div class="col-12 mx-auto" style="margin-top: 50px;">
+                        <h1 class="display-6 text-center">Invoice Details</h1>
+                        <div class="col-12 mx-auto mb-4">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>Invoice Number</th>
+                                    <td>{{ invoice.invoice_number }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Dealer Full Name</th>
+                                    <td>{{ user.full_name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Dealer Phone Number</th>
+                                    <td>{{ user.phone_number }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Status</th>
+                                    <td>{{ invoice.status }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Total Price</th>
+                                    <td>{{ product_total_price }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Product Total Count</th>
+                                    <td>{{ invoice_product_list|length }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Product Total Gramm</th>
+                                    <td>{{ product_total_gramm }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Product Sold Count</th>
+                                    <td>{{ product_sold_count }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Created At</th>
+                                    <td>{{ invoice.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                </tr>
+                            </table>
+                            <h1 class="display-6 text-center mt-5">Products</h1>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Product QR</th>
+                                    <th>Product Title</th>
+                                    <th>Product Gramm</th>
+                                    <th>Product Proba</th>
+                                    <th>Product Type</th>
+                                    <th>Product Number</th>
+                                    <th>Product Status</th>
+                                    <th>Product Price</th>
+                                </tr>
+                                {% for invoice_product in invoice_product_list %}
+                                    {% for product in product_list %}
+                                        {% if product.id == invoice_product.product_id %}
+                                        <tr>
+                                            <td>{{ loop.index }}</td>
+                                            <td>
+                                                <img src="{{ url_for('static', filename='qr_code/' + product.qr_code) }}" alt="QR Code" style="width: 50px; height: 50px;">
+                                            </td>
+                                            <td>{{ product.title }}</td>
+                                            <td>{{ product.gramm }}</td>
+                                            <td>{{ product.proba }}</td>
+                                            <td>{{ product.type }}</td>
+                                            <td>{{ product.number }}</td>
+                                            <td>{{ product.status }}</td>
+                                            <td>{{ product.price }}</td>
+                                        </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                                {% if invoice_product_list|length == 0 %}
+                                    <tr>
+                                        <td colspan="9" class="text-center">No products found.</td>
+                                    </tr>
+                                {% endif %}
+                            </table>
+                            <a href="{{ url_for('invoice_list_page') }}" class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover btn-primary" style="font-size: 20px;">Back</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

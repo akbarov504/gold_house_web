@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}
+Invoice Print Page
+{% endblock %}
+{% block content %}
+    <section>
+        <div class="container-fluid">
+            <div class="row" style="height: 100vh;">
+                <div class="w-100">
+                    <div class="w-100">
+                        <div class="col-4 mb-4">
+                            <div id="section-to-print" class="d-block my-3 py-3 border p-2">
+                                <h1 class="text-center">Gold House</h1>
+                                <hr>
+                                <h6><b>Invoice Number</b><span class="float-right">{{ invoice.invoice_number }}</span></h6>
+                                <p><b>Total Price</b><span class="float-right">{{ product_total_price }}</span></p>
+                                <p><b>Product Total Count</b><span class="float-right">{{ invoice_product_list|length }}</span></p>
+                                <p><b>Product Total Gramm</b><span class="float-right">{{ product_total_gramm }}</span></p>
+                                <p><b>Dealer Name</b><span class="float-right">{{ user.full_name }}</span></p>
+                                <p><b>Dealer Phone</b><span class="float-right">{{ user.phone_number }}</span></p>
+                                <hr>
+                                <h4 class="text-center">Product List</h4>
+                                <hr>
+                                {% for invoice_product in invoice_product_list %}
+                                    {% for product in product_list %}
+                                        {% if invoice_product.product_id == product.id %}
+                                        <p><b>Product Title</b><span class="float-right">{{ product.title }}</span></p>
+                                        <p><b>Product Gramm</b><span class="float-right">{{ product.gramm }}</span></p>
+                                        <p><b>Product Proba</b><span class="float-right">{{ product.proba }}</span></p>
+                                        <p><b>Product Type</b><span class="float-right">{{ product.type }}</span></p>
+                                        <p><b>Product Price</b><span class="float-right">{{ product.price }}</span></p>
+                                        <hr>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                                <p class="text-center text-small text-muted">Created At | {{ invoice.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                            </div>
+                            <button class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover btn-primary" style="font-size: 20px;" onclick="window.print()">Print</button>
+                            <a href="{{ url_for('invoice_list_page') }}" class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover btn-primary mt-2" style="font-size: 20px;">Back</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

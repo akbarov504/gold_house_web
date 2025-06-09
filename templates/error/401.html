@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}
+401 Sahifa
+{% endblock %}
+{% block content %}
+    <section>
+        <div class="container">
+            <div class="row justify-content-center align-items-center flex-column" style="height: 100vh;">
+                <h1 class="display-3">Tizimga kirilmagan</h1>
+                <a href="{{ url_for('login_page') }}" class="text-muted text-decoration-none">Kirish sahifasiga o'tish</a>
+            </div>
+        </div>
+    </section>
+{% endblock %}

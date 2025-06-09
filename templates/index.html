@@ -1,0 +1,268 @@
+{% extends 'base.html' %}
+{% block title %}
+Bosh Sahifa
+{% endblock %}
+{% block content %}
+<section>
+    <div class="container-fluid">
+        <div class="row" style="height: 100vh;">
+            {% if current_user.role == 'ADMIN' %}
+            <div class="col-2" style="background-color: darkblue;">
+                <div class="w-100 my-5">
+                    <h1 class="display-6 text-center text-white">Gold House</h1>
+                </div>
+                <div class="col-10 mx-auto my-4">
+                    <a href="{{ url_for('home_page') }}"
+                        class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                        style="font-size: 20px;">Bosh sahifa</a>
+                </div>
+                <div class="col-10 mx-auto my-4">
+                    <a href="{{ url_for('client_list_page') }}"
+                        class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                        style="font-size: 20px;">Mijozlar</a>
+                </div>
+                <div class="col-10 mx-auto my-4">
+                    <a href="{{ url_for('dealer_list_page') }}"
+                        class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                        style="font-size: 20px;">Dillerlar</a>
+                </div>
+                <div class="col-10 mx-auto my-4">
+                    <a href="{{ url_for('salary_list_page') }}"
+                        class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                        style="font-size: 20px;">Ish haqi</a>
+                </div>
+                <div class="col-10 mx-auto my-4">
+                    <a href="{{ url_for('consumption_list_page') }}"
+                        class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                        style="font-size: 20px;">Harajatlar</a>
+                </div>
+                <div class="col-10 mx-auto my-4">
+                    <a href="{{ url_for('product_list_page') }}"
+                        class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                        style="font-size: 20px;">Mahsulotlar</a>
+                </div>
+                <div class="col-10 mx-auto my-4">
+                    <a href="{{ url_for('invoice_list_page') }}"
+                        class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                        style="font-size: 20px;">Hisob faktura</a>
+                </div>
+                <div class="col-10 mx-auto my-4">
+                    <a href="{{ url_for('worker_list_page') }}"
+                        class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                        style="font-size: 20px;">Ishchi</a>
+                </div>
+                <div class="col-10 mx-auto my-4">
+                    <a href="{{ url_for('profile_page') }}"
+                        class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                        style="font-size: 20px;">Profil</a>
+                </div>
+                <div class="col-10 mx-auto my-4">
+                    <a href="{{ url_for('logout_page') }}"
+                        class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover-logout"
+                        style="font-size: 20px;">Chiqish</a>
+                </div>
+            </div>
+            <div class="col-10">
+                <div class="row no-gutters">
+                    <div class="col-12">
+                        <div class="p-3">
+                            <h1 class="display-6 text-center my-5">Statistika</h1>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3">
+                            <div class="py-4 px-5 border rounded d-flex justify-content-between align-items-center">
+                                <h4 class="mb-0">1$ - {{ exchange_data['UZS'] }}</h4>
+                                 <div>
+                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                        data-target="#exampleModal2">
+                                        Yangilash
+                                    </button>
+                                </div>
+
+                                <div class="modal fade" id="exampleModal2" tabindex="-1"
+                                    aria-labelledby="exampleModal2Label" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModal2Label">Dollar kursi</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form method="post" action="{{ url_for('exchange_dollor') }}">
+                                                    <div class="form-group">
+                                                        <label for="recipient-name"
+                                                            class="col-form-label">Yangi dollar kursini kiriting</label>
+                                                        <input type="text" class="form-control" id="recipient-name" value="{{ exchange_data['UZS'] }}" name="dollor">
+                                                    </div>
+                                                    <button type="button" class="btn btn-secondary mt-4" data-dismiss="modal">Yopish</button>
+                                                    <button type="submit" class="btn btn-primary float-right mt-4">Saqlash</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3">
+                            <div class="py-4 px-5 border rounded d-flex justify-content-between align-items-center">
+                                <h4 class="mb-0">1g - {{ exchange_data['GOLD'] }}$</h4>
+                                <div>
+                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                        data-target="#exampleModal">
+                                        Yangilash
+                                    </button>
+                                </div>
+
+                                <div class="modal fade" id="exampleModal" tabindex="-1"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Oltin narxi</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form method="post" action="{{ url_for('exchange_gold') }}">
+                                                    <div class="form-group">
+                                                        <label for="recipient-name"
+                                                            class="col-form-label">Yangi oltin narxini kiriting</label>
+                                                        <input type="text" class="form-control" id="recipient-name" value="{{ exchange_data['GOLD'] }}" name="gold">
+                                                    </div>
+                                                    <button type="button" class="btn btn-secondary mt-4" data-dismiss="modal">Yopish</button>
+                                                    <button type="submit" class="btn btn-primary mt-4 float-right">Saqlash</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-8" style="height: 50vh;">
+                        <div class="p-3 h-100">
+                            <canvas class="w-100 border" id="myChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-4" style="margin-top: -121px;">
+                        <div class="p-3 h-100">
+                            <div class="row no-gutters">
+                                <div class="col-12">
+                                    <h3 class="text-center mb-3">Bazalar</h3>
+                                    <a href="{{ url_for('main_system_list_page') }}" class="btn btn-primary w-100 mb-3">Hamma bazalarni ko'rish</a>
+                                </div>
+                                {% for main_system in main_system_list %}
+                                <div class="col-12 py-4 px-5 my-3 border rounded">
+                                    <div class="col-12 d-flex justify-content-between">
+                                        <p class="text-muted">Lom: <b class="text-dark">{{ main_system.lom }}</b></p>
+                                        <p class="text-muted">Lom narxi: <b class="text-dark">{{ main_system.lom * exchange_data['GOLD']|int }} $</b></p>
+                                    </div>
+                                    <div class="col-12 d-flex justify-content-between">
+                                        <p class="text-muted">Xona: 
+                                            <b class="text-dark">
+                                                {% set room_total_amount = namespace(total=0) %}
+                                                {% for room in room_list %}
+                                                    {% if room.main_system_id == main_system.id %}
+                                                        {% set room_total_amount.total = room_total_amount.total + room.lom %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {{ room_total_amount.total }}
+                                            </b>
+                                        </p>
+                                    </div>
+                                    <div class="col-12 d-flex justify-content-between">
+                                        <p class="text-muted">Harajatlar: <b class="text-dark">{{ consumption_total_amount }}</b></p>
+                                    </div>
+                                    <div class="col-12 d-flex justify-content-between">
+                                        <p class="text-muted">Tayyor mahsulotlar: <b class="text-dark">{{ product_new_total_amount }}</b></p>
+                                    </div>
+                                    <div class="col-12 d-flex justify-content-between">
+                                        <p class="text-muted">Dillerdagi mahsulotlar: <b class="text-dark">{{ product_invoice_total_amount }}</b></p>
+                                    </div>
+                                    <div class="col-12 d-flex justify-content-between">
+                                        <p class="text-muted">Mijozlardagi lom: <b class="text-dark">{{ client_total_debt }}</b></p>
+                                    </div>
+                                    <div class="col-12 d-flex justify-content-between">
+                                        <h5 class="text-muted">Jami: <b class="text-dark">{{ total + room_total_amount.total }}</b></h5>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-2" style="background-color: darkblue;">
+                <div class="w-100 my-5">
+                    <h1 class="display-6 text-center text-white">Gold House</h1>
+                </div>
+                <div class="col-10 mx-auto my-4">
+                    <a href="{{ url_for('home_page') }}"
+                        class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                        style="font-size: 20px;">Bosh sahifa</a>
+                </div>
+                <div class="col-10 mx-auto my-4">
+                    <a href="{{ url_for('product_list_page') }}"
+                        class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                        style="font-size: 20px;">Mahsulotlar</a>
+                </div>
+                <div class="col-10 mx-auto my-4">
+                    <a href="{{ url_for('profile_page') }}"
+                        class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
+                        style="font-size: 20px;">Profil</a>
+                </div>
+                <div class="col-10 mx-auto my-4">
+                    <a href="{{ url_for('logout_page') }}"
+                        class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover-logout"
+                        style="font-size: 20px;">Chiqish</a>
+                </div>
+            </div>
+            <div class="col-10">
+                <div class="row no-gutters">
+                    <div class="col-12">
+                        <div class="p-3">
+                            <h1 class="display-6 text-center my-5">Bosh Sahifa</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+<script>
+    const labels = JSON.parse('{{ labels | tojson | safe }}');
+    const chartData = JSON.parse('{{ data | tojson | safe }}');
+
+    const data = {
+        labels: labels,
+        datasets: [{
+            label: 'Yangi hisob fakturalar',
+            backgroundColor: 'blueviolet',
+            borderColor: 'blueviolet',
+            data: chartData,
+        }]
+    };
+
+    const config = {
+        type: 'line',
+        data: data,
+        options: { maintainAspectRatio: false }
+    };
+
+    const myChart = new Chart(
+        document.getElementById('myChart'),
+        config
+    );
+</script>
+{% endblock %}
