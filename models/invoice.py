@@ -1,5 +1,6 @@
+import pytz
 from models import db
-from datetime import datetime
+from datetime import datetime, timezone
 
 class Invoice(db.Model):
     __tablename__ = 'invoice'
@@ -11,7 +12,7 @@ class Invoice(db.Model):
     status = db.Column(db.String(10), nullable=False)
     total_price = db.Column(db.Float(), nullable=False)
 
-    created_at = db.Column(db.DateTime(), default=datetime.now())
+    created_at = db.Column(db.DateTime(), default=datetime.now(timezone.utc))
 
     def __init__(self, invoice_number, user_id, status, total_price):
         super().__init__()
@@ -19,4 +20,6 @@ class Invoice(db.Model):
         self.user_id = user_id
         self.status = status
         self.total_price = total_price
-        self.created_at = datetime.now()
+        time = datetime.now(timezone.utc)
+        time = time.astimezone(pytz.timezone('Asia/Tashkent'))
+        self.created_at = time

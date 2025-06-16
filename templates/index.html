@@ -72,7 +72,7 @@ Bosh Sahifa
                     <div class="col-4">
                         <div class="p-3">
                             <div class="py-4 px-5 border rounded d-flex justify-content-between align-items-center">
-                                <h4 class="mb-0">1$ - {{ exchange_data['UZS'] }}</h4>
+                                <h4 class="mb-0">1$ - {{ (exchange_data['UZS']|float)|round(2) }}</h4>
                                  <div>
                                     <button type="button" class="btn btn-primary" data-toggle="modal"
                                         data-target="#exampleModal2">
@@ -111,7 +111,7 @@ Bosh Sahifa
                     <div class="col-4">
                         <div class="p-3">
                             <div class="py-4 px-5 border rounded d-flex justify-content-between align-items-center">
-                                <h4 class="mb-0">1g - {{ exchange_data['GOLD'] }}$</h4>
+                                <h4 class="mb-0">1g - {{ (exchange_data['GOLD']|float)|round(2) }}$</h4>
                                 <div>
                                     <button type="button" class="btn btn-primary" data-toggle="modal"
                                         data-target="#exampleModal">
@@ -164,7 +164,7 @@ Bosh Sahifa
                                 <div class="col-12 py-4 px-5 my-3 border rounded">
                                     <div class="col-12 d-flex justify-content-between">
                                         <p class="text-muted">Lom: <b class="text-dark">{{ main_system.lom }}</b></p>
-                                        <p class="text-muted">Lom narxi: <b class="text-dark">{{ main_system.lom * exchange_data['GOLD']|int }} $</b></p>
+                                        <p class="text-muted">Lom narxi: <b class="text-dark">{{ (main_system.lom * exchange_data['GOLD']|float)|round(2) }} $</b></p>
                                     </div>
                                     <div class="col-12 d-flex justify-content-between">
                                         <p class="text-muted">Xona: 
@@ -175,7 +175,7 @@ Bosh Sahifa
                                                         {% set room_total_amount.total = room_total_amount.total + room.lom %}
                                                     {% endif %}
                                                 {% endfor %}
-                                                {{ room_total_amount.total }}
+                                                {{ (room_total_amount.total)|round(2) }}
                                             </b>
                                         </p>
                                     </div>
@@ -192,7 +192,16 @@ Bosh Sahifa
                                         <p class="text-muted">Mijozlardagi lom: <b class="text-dark">{{ client_total_debt }}</b></p>
                                     </div>
                                     <div class="col-12 d-flex justify-content-between">
-                                        <h5 class="text-muted">Jami: <b class="text-dark">{{ total + room_total_amount.total }}</b></h5>
+                                        <h5 class="text-muted">Jami: <b class="text-dark">{{ (total + room_total_amount.total)|round(2) }}</b></h5>
+                                    </div>
+                                    <div class="col-12 d-flex justify-content-between">
+                                        <h5 class="text-muted">
+                                            {% if (main_system.lom - (total + room_total_amount.total)) < 0 %}
+                                                Plus: <b class="text-dark">{{ ((total + room_total_amount.total) - main_system.lom)|round(2) }}</b>
+                                            {% else %}
+                                                Minus: <b class="text-dark">-{{ (main_system.lom - (total + room_total_amount.total))|round(2) }}</b>
+                                            {% endif %}
+                                        </h5>
                                     </div>
                                 </div>
                                 {% endfor %}
@@ -212,11 +221,6 @@ Bosh Sahifa
                         style="font-size: 20px;">Bosh sahifa</a>
                 </div>
                 <div class="col-10 mx-auto my-4">
-                    <a href="{{ url_for('product_list_page') }}"
-                        class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
-                        style="font-size: 20px;">Mahsulotlar</a>
-                </div>
-                <div class="col-10 mx-auto my-4">
                     <a href="{{ url_for('profile_page') }}"
                         class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover"
                         style="font-size: 20px;">Profil</a>
@@ -232,6 +236,51 @@ Bosh Sahifa
                     <div class="col-12">
                         <div class="p-3">
                             <h1 class="display-6 text-center my-5">Bosh Sahifa</h1>
+                        </div>
+                    </div>
+                    <div class="col-12 my-3">
+                        <div class="w-100 mt-3">
+                            <table class="table table-hover table-bordered">
+                                <tr>
+                                    <th>#</th>
+                                    <th>QR</th>
+                                    <th>Title</th>
+                                    <th>Gramm</th>
+                                    <th>Proba</th>
+                                    <th>Type</th>
+                                    <th>Number</th>
+                                    <th>Size</th>
+                                    <th>Created At</th>
+                                    <th>
+                                        Action
+                                        <a href="{{ url_for('add_qr_code') }}" class="btn btn-success float-right">Add</a>
+                                    </th>
+                                </tr>
+                                {% for qr_code in qr_code_list %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>
+                                            <img src="{{ url_for('static', filename='qr_code/' + qr_code.qr_code) }}" alt="QR Code" style="width: 50px; height: 50px;">
+                                        </td>
+                                        <td>{{ qr_code.title }}</td>
+                                        <td>{{ qr_code.gramm }}</td>
+                                        <td>{{ qr_code.proba }}</td>
+                                        <td>{{ qr_code.type }}</td>
+                                        <td>{{ qr_code.number }}</td>
+                                        <td>{{ qr_code.size }}</td>
+                                        <td>{{ qr_code.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                        <td>
+                                            <a href="{{ url_for('qr_code_delete_page', qr_code_id=qr_code.id) }}" class="btn btn-danger">Delete</a>
+                                            <a href="{{ url_for('qr_code_print_page', qr_code_id=qr_code.id) }}" class="btn btn-primary">Print</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                {% if qr_code_list|length == 0 %}
+                                    <tr>
+                                        <td colspan="10" class="text-center">No products found.</td>
+                                    </tr>
+                                {% endif %}
+                            </table>
                         </div>
                     </div>
                 </div>

@@ -1,5 +1,6 @@
+import pytz
 from models import db
-from datetime import datetime
+from datetime import datetime, timezone
 
 class Salary(db.Model):
     __tablename__ = 'salary'
@@ -9,10 +10,12 @@ class Salary(db.Model):
     type = db.Column(db.String(10), nullable=False)
     amount = db.Column(db.Float(), nullable=False)
 
-    created_at = db.Column(db.DateTime(), default=datetime.now())
+    created_at = db.Column(db.DateTime(), default=datetime.now(timezone.utc))
 
     def __init__(self, type, amount):
         super().__init__()
         self.type = type
         self.amount = amount
-        self.created_at = datetime.now()
+        time = datetime.now(timezone.utc)
+        time = time.astimezone(pytz.timezone('Asia/Tashkent'))
+        self.created_at = time

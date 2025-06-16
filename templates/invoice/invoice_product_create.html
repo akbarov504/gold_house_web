@@ -64,18 +64,16 @@ Invoice Product Create Page
             <div class="col-10">
                 <div class="col-12 mx-auto" style="margin-top: 50px;">
                     <div class="w-100 mx-auto my-4">
-                        <form class="form-inline my-4 float-right" method="get" action="{{ url_for('invoice_product_create_page', query=name) }}">
-                            <label class="sr-only" for="inlineFormInputName2">Search</label>
-                            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search">
-                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                        <form class="form-inline my-4 float-right" method="get" action="{{ url_for('invoice_product_create_page') }}">
+                            <label class="sr-only" for="inlineFormInputName2">Enter id</label>
+                            <input class="form-control mr-sm-2" type="number" placeholder="Enter ID" aria-label="Search" name="id" autofocus>
+                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Send</button>
                         </form>
                     </div>
                     <form method="post">
-                        {{ form.hidden_tag() }}
                         <table class="table table-hover table-bordered">
                             <tr>
                                 <th>#</th>
-                                <th>QR</th>
                                 <th>Title</th>
                                 <th>Gramm</th>
                                 <th>Proba</th>
@@ -90,18 +88,14 @@ Invoice Product Create Page
                                     <a href="{{ url_for('product_list_page') }}"
                                         class="btn btn-primary float-right">Add Product</a>
                                     {% else %}
-                                        {{ form.hidden_field(id='hidden_field') }}
-                                        {{ form.submit(class='btn btn-primary float-right') }}
+                                    <a href="{{ url_for('invoice_create_page', product_list=product_list_with_id) }}"
+                                        class="btn btn-primary float-right">Save</a>
                                     {% endif %}
                                 </th>
                             </tr>
                             {% for product in product_list %}
                             <tr>
                                 <td>{{ loop.index }}</td>
-                                <td>
-                                    <img src="{{ url_for('static', filename='qr_code/' + product.qr_code) }}" alt="QR Code"
-                                        style="width: 50px; height: 50px;">
-                                </td>
                                 <td>{{ product.title }}</td>
                                 <td>{{ product.gramm }}</td>
                                 <td>{{ product.proba }}</td>
@@ -110,15 +104,11 @@ Invoice Product Create Page
                                 <td>{{ product.size }}</td>
                                 <td>{{ product.status }}</td>
                                 <td>{{ product.price }}</td>
-                                <td>
-                                    <button class="btn btn-success" id="check-product-{{ product.id }}"
-                                        onclick="change('{{ product.id }}')" type="button">+</button>
-                                </td>
                             </tr>
                             {% endfor %}
                             {% if product_list|length == 0 %}
                             <tr>
-                                <td colspan="10" class="text-center">No products found.</td>
+                                <td colspan="9" class="text-center">No products found.</td>
                             </tr>
                             {% endif %}
                         </table>
@@ -128,34 +118,4 @@ Invoice Product Create Page
         </div>
     </div>
 </section>
-<script>
-    localStorage.removeItem('getIds')
-    const getIds = JSON.parse(localStorage.getItem('getIds')) || [];
-    function change(id) {
-        const checkProductButton = document.getElementById('check-product-' + id);
-        console.log(checkProductButton.innerText);
-        
-        if (checkProductButton.innerText == '+') {
-            checkProductButton.innerText = '-';
-            checkProductButton.classList.remove('btn-success');
-            checkProductButton.classList.add('btn-danger');
-            getIds.push(id)
-
-            localStorage.setItem('getIds', JSON.stringify(getIds))
-            data = JSON.parse(localStorage.getItem('getIds')) || [];
-            document.getElementById('hidden_field').setAttribute('value', data)
-        } else {
-            checkProductButton.innerText = '+';
-            checkProductButton.classList.remove('btn-danger');
-            checkProductButton.classList.add('btn-success');
-            let id_index = getIds.indexOf(id)
-            delete getIds[id_index]
-            getIds[id_index] = -1
-
-            localStorage.setItem('getIds', JSON.stringify(getIds))
-            data = JSON.parse(localStorage.getItem('getIds')) || [];    
-            document.getElementById('hidden_field').setAttribute('value', data)
-        }
-    }
-</script>
 {% endblock %}

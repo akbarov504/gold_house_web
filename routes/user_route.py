@@ -5,6 +5,7 @@ import models.invoice
 from models import db
 import models.client_debt
 from datetime import date
+from sqlalchemy import or_
 from flask_login import login_required
 from flask import render_template, redirect, url_for, flash, request
 from forms.user_form import CreateClientForm, UpdateClientForm, CreateDealerForm, UpdateDealerForm
@@ -12,8 +13,26 @@ from forms.user_form import CreateClientForm, UpdateClientForm, CreateDealerForm
 @app.route("/client/list", methods=["GET"])
 @login_required
 def client_list_page():
+    query_search = request.args.get("search", None)
+
+    if query_search:
+        result = query_search.strip()
+        if result:
+            client_list = models.user.User.query.filter(models.user.User.role == "CLIENT", or_(models.user.User.full_name.like(f"%{result}%"), models.user.User.phone_number.like(f"%{result}%"))).order_by(models.user.User.created_at.desc()).all()
+        else:
+            client_list = models.user.User.query.filter_by(role="CLIENT").order_by(models.user.User.created_at.desc()).all()
+    else:
+        client_list = models.user.User.query.filter_by(role="CLIENT").order_by(models.user.User.created_at.desc()).all()
+
+    client_debt_list = models.client_debt.ClientDebt.query.all()
+    return render_template("user/client_list.html", client_list=client_list, client_debt_list=client_debt_list)
+
+@app.route("/client/table", methods=["GET"])
+@login_required
+def client_table_page():
     client_list = models.user.User.query.filter_by(role="CLIENT").order_by(models.user.User.created_at.desc()).all()
-    return render_template("user/client_list.html", client_list=client_list)
+    client_debt_list = models.client_debt.ClientDebt.query.all()
+    return render_template("user/client_table.html", client_list=client_list, client_debt_list=client_debt_list)
 
 @app.route("/client/create", methods=["GET", "POST"])
 @login_required

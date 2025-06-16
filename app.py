@@ -5,6 +5,7 @@ from models import db, login_manager, migrate
 from models.user import User
 from models.room_t import RoomT
 from models.salary import Salary
+from models.qr_code import QRCode
 from models.product import Product
 from models.invoice import Invoice
 from models.client_debt import ClientDebt
@@ -14,7 +15,7 @@ from models.invoice_product import InvoiceProduct
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "342afc9ac2gfd5435ga1372f913"
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=3)
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=1)
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://akbarov:akbarov@127.0.0.1:5432/gold_house"
 app.config["UPLOAD_FOLDER"] = "static/qr_code"
 app.config["WTF_CSRF_ENABLED"] = False

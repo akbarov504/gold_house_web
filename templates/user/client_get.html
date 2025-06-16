@@ -95,7 +95,7 @@ Client Get Page
                                     <th>Comment</th>
                                     <th>Created At</th>
                                     <th>Action
-                                        <a href="{{ url_for('client_debt_create_page') }}" class="btn btn-success float-right">Add</a>
+                                        <a href="{{ url_for('client_debt_create_page_with_id', client_id=client.id) }}" class="btn btn-success float-right">Add</a>
                                     </th>
                                 </tr>
                                 {% for client_debt in client_debt_list %}
@@ -106,7 +106,7 @@ Client Get Page
                                         <td>{{ client_debt.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                                         <td>
                                             <a href="{{ url_for('client_debt_delete_page', client_debt_id=client_debt.id) }}" class="btn btn-danger">Delete</a>
-                                            <a href="{{ url_for('client_debt_update_page', client_debt_id=client_debt.id) }}" class="btn btn-warning">Update</a>
+                                            <a href="{{ url_for('client_debt_update_page', client_id=client.id, client_debt_id=client_debt.id) }}" class="btn btn-warning">Update</a>
                                         </td>
                                     </tr>
                                 {% endfor %}

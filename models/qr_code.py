@@ -2,8 +2,8 @@ import pytz
 from models import db
 from datetime import datetime, timezone
 
-class Product(db.Model):
-    __tablename__ = 'product'
+class QRCode(db.Model):
+    __tablename__ = 'qr_code'
 
     id = db.Column(db.Integer(), primary_key=True)
 
@@ -12,23 +12,18 @@ class Product(db.Model):
     proba = db.Column(db.Float(), nullable=False)
     type = db.Column(db.String(50), nullable=False)
     number = db.Column(db.Integer(), nullable=False)
-    status = db.Column(db.String(10), nullable=False)
     size = db.Column(db.Float(), nullable=True, default=0)
-    price = db.Column(db.Float(), nullable=False)
-    qr_code = db.Column(db.String(255), nullable=False)
+    qr_code = db.Column(db.String(255), nullable=True)
 
     created_at = db.Column(db.DateTime(), default=datetime.now(timezone.utc))
 
-    def __init__(self, title, gramm, proba, type, number, status, price, qr_code, size=None):
+    def __init__(self, title, gramm, proba, type, number, size):
         super().__init__()
         self.title = title
         self.gramm = gramm
         self.proba = proba
         self.type = type
         self.number = number
-        self.status = status
-        self.price = price
-        self.qr_code = qr_code
         self.size = size
         time = datetime.now(timezone.utc)
         time = time.astimezone(pytz.timezone('Asia/Tashkent'))

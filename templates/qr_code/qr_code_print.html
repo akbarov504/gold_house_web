@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}
+QR Code Print Page
+{% endblock %}
+{% block content %}
+    <section>
+        <div class="container-fluid">
+            <div class="row" style="height: 100vh;">
+                <div class="w-100">
+                    <div class="w-100 mx-auto">
+                        <div class="mb-4">
+                            <div id="section-to-print" style="background: url('../../static/img/fon.jpg'); background-size: 260px 340px; width: 260px; height: 340px;" class="d-block my-3 py-3">
+                                <h5 style="margin-left: 155px; margin-top: 50px;">{{ qr_code.type }}{{ qr_code.number }}</h5>
+                                <h1 class="text-center" style="margin-top: -20px;">{{ qr_code.title }}</h2>
+                                <h3 class="text-center">Проба | {{ qr_code.proba|int }}*</h3>
+                                <h3 class="text-center">Вес | {{ qr_code.gramm }}</h3>
+                                <h3 class="text-center">Размер | {{ qr_code.size }}</h3>
+                                <h5 class="text-center"><b>GOLD HOUSE</b> <img src="{{ url_for('static', filename='qr_code/' + qr_code.qr_code) }}" alt="QR Code" style="width: 65px; height: 65px;"></h5>
+                            </div>
+                            <div style="width: 260px;">
+                                <button class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover btn-primary" style="font-size: 20px;" onclick="window.print()">Print</button>
+                                <a href="{{ url_for('home_page') }}" class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover btn-primary mt-2" style="font-size: 20px;">Back</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

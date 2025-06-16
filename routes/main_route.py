@@ -1,14 +1,22 @@
+import qrcode
 import calendar
-import models.room_t
 import models.user
+import models.room_t
 from app import app
+import models.salary
+from os import remove
+from models import db
+import models.qr_code
 import models.invoice
 import models.product
+from os.path import join
 import models.client_debt
 import models.consumption
 import models.main_system
 from datetime import date
+from datetime import datetime
 from flask_login import login_required
+from forms.qr_code_form import CreateQRCodeForm
 from flask import render_template, request, flash, redirect, url_for
 
 EXCHANGE_DATA = {
@@ -48,7 +56,7 @@ def home_page():
     
     gold = EXCHANGE_DATA["GOLD"]
     uzs = EXCHANGE_DATA["UZS"]
-    consumption_total_amount = ((consumption_total_amount / int(uzs)) / int(gold))
+    consumption_total_amount = ((consumption_total_amount / float(uzs)) / float(gold))
     consumption_total_amount = round(consumption_total_amount, 2)
 
     product_new_total_amount = 0
@@ -69,10 +77,11 @@ def home_page():
         client_debt_list = models.client_debt.ClientDebt.query.filter_by(user_id=client.id).all()
         for client_debt in client_debt_list:
             client_total_debt += client_debt.lom
+    client_total_debt = round(client_total_debt, 2)
 
     total = consumption_total_amount + product_new_total_amount + product_invoice_total_amount + client_total_debt
-
-    return render_template("index.html", labels=labels, data=data, exchange_data=EXCHANGE_DATA, product_count=len(product_list), product_total_price=product_total_price, main_system_list=main_system_list, consumption_total_amount=consumption_total_amount, product_new_total_amount=product_new_total_amount, product_invoice_total_amount=product_invoice_total_amount, client_total_debt=client_total_debt, room_list=room_list, total=total)
+    qr_code_list = models.qr_code.QRCode.query.order_by(models.qr_code.QRCode.created_at.desc()).all()
+    return render_template("index.html", labels=labels, data=data, exchange_data=EXCHANGE_DATA, product_count=len(product_list), product_total_price=product_total_price, main_system_list=main_system_list, consumption_total_amount=consumption_total_amount, product_new_total_amount=product_new_total_amount, product_invoice_total_amount=product_invoice_total_amount, client_total_debt=client_total_debt, room_list=room_list, total=total, qr_code_list=qr_code_list)
 
 @app.route("/exchange/dollor", methods=['POST'])
 @login_required
@@ -99,3 +108,65 @@ def exchange_gold():
         return redirect(url_for("home_page"))
     else:
        return redirect(url_for("home_page")) 
+
+@app.route("/add/qr_code", methods=["GET", "POST"])
+@login_required
+def add_qr_code():
+    form = CreateQRCodeForm()
+    title_list = ["КАЛЬЦО", "СЕРЬГИ", "КУЛОН"]
+    type_list = [s.type for s in models.salary.Salary.query.all()]
+    form.title.choices = title_list
+    form.type.choices = type_list
+    if form.validate_on_submit():
+        title = form.title.data
+        gramm = form.gramm.data
+        proba = form.proba.data
+        type = form.type.data
+        number = form.number.data
+        size = form.size.data
+
+        new_qr_code = models.qr_code.QRCode(title, gramm, proba, type, number, size)
+        db.session.add(new_qr_code)
+        db.session.commit()
+
+        qr_data = new_qr_code.id
+        qr = qrcode.QRCode(version=1, box_size=5, border=2)
+        qr.add_data(qr_data)
+        qr.make()
+        img = qr.make_image(fill_color="black", back_color="white")
+
+        filename = f"{title}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
+        file_path = join(app.config['UPLOAD_FOLDER'], filename)
+        img.save(file_path)
+
+        new_qr_code.qr_code = filename
+        db.session.commit()
+
+        flash("Qr code successfully created", "success")
+        return redirect(url_for("home_page"))
+    else:
+        return render_template("qr_code/qr_code_create.html", form=form)
+
+@app.route("/qr_code/delete/<qr_code_id>", methods=["GET", "POST"])
+@login_required
+def qr_code_delete_page(qr_code_id):
+    if request.method == "POST":
+        deleted_qr_code = models.qr_code.QRCode.query.filter_by(id=qr_code_id).first()
+        db.session.delete(deleted_qr_code)
+        db.session.commit()
+
+        remove(join(app.config['UPLOAD_FOLDER'], deleted_qr_code.qr_code))
+        flash("QR Code successfully deleted", "warning")
+        return redirect(url_for("home_page"))
+    else:
+        return render_template("qr_code/qr_code_delete.html", qr_code_id=qr_code_id)
+
+@app.route("/qr_code/print/<qr_code_id>", methods=["GET"])
+@login_required
+def qr_code_print_page(qr_code_id):
+    qr_code_print = models.qr_code.QRCode.query.filter_by(id=qr_code_id).first()
+    if qr_code_print:
+        return render_template("qr_code/qr_code_print.html", qr_code=qr_code_print)
+    else:
+        flash("QR Code not found", "danger")
+        return redirect(url_for("home_page"))

@@ -62,7 +62,25 @@ Invoice List Page
                     </div>
                 </div>
                 <div class="col-10">
-                    <div class="col-12 mx-auto" style="margin-top: 150px;">
+                    <div class="col-12 mx-auto" style="margin-top: 50px;">
+                        <div class="w-100 mx-auto d-flex justify-content-between align-items-center">
+                            <h2>Total Gramm: {{ product_total_gramm }}</h2>
+                            <h2>Total Price: {{ product_total_price }}</h2>
+                        </div>
+                        {% for salary in salary_list %}
+                            {% set salary_total_gramm = namespace(total=0) %}
+                            {% set salary_total_price = namespace(total=0) %}
+                            {% for product in product_list %}
+                                {% if salary.type == product.type %}
+                                    {% set salary_total_gramm.total = salary_total_gramm.total + product.gramm %}
+                                    {% set salary_total_price.total = salary_total_price.total + product.price %}
+                                {% endif %}
+                            {% endfor %}
+                            <div class="w-100 mx-auto d-flex justify-content-between align-items-center">
+                                <h2>Total Gramm {{ salary.type }}: {{ salary_total_gramm.total|round(2) }}</h2>
+                                <h2>Total Price {{ salary.type }}: {{ salary_total_price.total|round(2) }}</h2>
+                            </div>
+                        {% endfor %}
                         <table class="table table-hover table-bordered">
                             <tr>
                                 <th>#</th>
@@ -88,7 +106,7 @@ Invoice List Page
                                     {% endfor %}
 
                                     <td>{{ invoice.status }}</td>
-                                    <td>{{ invoice.total_price }}</td>
+                                    <td>{{ invoice.total_price|round(2) }}</td>
                                     <td>{{ invoice.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                                     <td>
                                         <a href="{{ url_for('invoice_delete_page', invoice_id=invoice.id) }}" class="btn btn-danger">Delete</a>

@@ -1,5 +1,6 @@
+import pytz
 from models import db
-from datetime import datetime
+from datetime import datetime, timezone
 
 class Consumption(db.Model):
     __tablename__ = 'consumption'
@@ -10,11 +11,13 @@ class Consumption(db.Model):
     comment = db.Column(db.String(300), nullable=False)
     amount = db.Column(db.Float(), nullable=False)
 
-    created_at = db.Column(db.DateTime(), default=datetime.now())
+    created_at = db.Column(db.DateTime(), default=datetime.now(timezone.utc))
 
     def __init__(self, type, comment, amount):
         super().__init__()
         self.type = type
         self.comment = comment
         self.amount = amount
-        self.created_at = datetime.now()
+        time = datetime.now(timezone.utc)
+        time = time.astimezone(pytz.timezone('Asia/Tashkent'))
+        self.created_at = time

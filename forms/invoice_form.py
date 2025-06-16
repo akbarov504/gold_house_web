@@ -8,7 +8,3 @@ class CreateInvoiceForm(FlaskForm):
 class UpdateInvoiceForm(FlaskForm):
     dealer = SelectField("Dealer", [validators.DataRequired()], choices=[])
     submit = SubmitField("Update")
-
-class CreateInvoiceProductForm(FlaskForm):
-    hidden_field = HiddenField("Hidden Field")
-    submit = SubmitField("Save")

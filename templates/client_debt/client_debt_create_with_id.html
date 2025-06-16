@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 {% block title %}
-Client Debt Update Page
+Client Debt Create Page
 {% endblock %}
 {% block content %}
 <section>
     <div class="container">
         <div class="row justify-content-center align-items-center" style="height: 100vh;">
             <div class="col-6">
-                <p class="text-center text-muted mt-3" style="font-size: 40px; font-weight: 300;">Client Debt Update Page</p>
+                <p class="text-center text-muted mt-3" style="font-size: 40px; font-weight: 300;">Client Debt Create Page</p>
                 <form method="post" class="col-12">
                     {{ form.hidden_tag() }}
-                    <div class="form-group mt-4">
+                    <div class="form-group">
                         {{ form.lom.label(style="font-size: 20px") }}
                         {{ form.lom(class="form-control", placeholder="lom", style="font-size: 20px") }}
                     </div>

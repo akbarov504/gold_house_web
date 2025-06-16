@@ -84,7 +84,7 @@ Invoice Get Page
                                 </tr>
                                 <tr>
                                     <th>Total Price</th>
-                                    <td>{{ product_total_price }}</td>
+                                    <td>{{ product_total_price|round(2) }}</td>
                                 </tr>
                                 <tr>
                                     <th>Product Total Count</th>
@@ -92,22 +92,67 @@ Invoice Get Page
                                 </tr>
                                 <tr>
                                     <th>Product Total Gramm</th>
-                                    <td>{{ product_total_gramm }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Product Sold Count</th>
-                                    <td>{{ product_sold_count }}</td>
+                                    <td>{{ product_total_gramm|round(2) }}</td>
                                 </tr>
                                 <tr>
                                     <th>Created At</th>
                                     <td>{{ invoice.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                                 </tr>
+                                <tr>
+                                    <th>Action</th>
+                                    <td>
+                                        <a href="{{ url_for('invoice_complate_page', invoice_id=invoice.id) }}" class="btn btn-success">Complate</a>
+                                    </td>
+                                </tr>
                             </table>
                             <h1 class="display-6 text-center mt-5">Products</h1>
+                            <div class="w-100">
+                                <form class="form-inline my-4 float-right" method="get" action="{{ url_for('invoice_get_page', invoice_id=invoice.id) }}">
+                                    <label class="sr-only" for="inlineFormInputName2">Enter id</label>
+                                    <input class="form-control mr-sm-2" type="number" placeholder="Enter ID" aria-label="Search" name="id" autofocus>
+                                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Send</button>
+                                </form>
+                            </div>
+                            {% set sold_total_gramm = namespace(total=0) %}
+                            {% set sold_total_price = namespace(total=0) %}
+                            {% set sold_total_count = namespace(total=0) %}
+
+                            {% set back_total_gramm = namespace(total=0) %}
+                            {% set back_total_price = namespace(total=0) %}
+                            {% set back_total_count = namespace(total=0) %}
+
+                            {% for invoice_product in invoice_product_list %}
+                                {% if invoice_product.invoice_id == invoice.id %}
+                                    {% for product in product_list %}
+                                        {% if product.id == invoice_product.product_id %}
+                                            {% if product.status == "NEW" %}
+                                                {% set back_total_gramm.total = back_total_gramm.total + product.gramm %}
+                                                {% set back_total_price.total = back_total_price.total + product.price %}
+                                                {% set back_total_count.total = back_total_count.total + 1 %}
+                                            {% elif product.status == "SOLD" %}
+                                                {% set sold_total_gramm.total = sold_total_gramm.total + product.gramm %}
+                                                {% set sold_total_price.total = sold_total_price.total + product.price %}
+                                                {% set sold_total_count.total = sold_total_count.total + 1 %}
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                            <div class="w-100 mx-auto d-flex justify-content-between align-items-center">
+                                <h2>Sold Total Gramm: {{ sold_total_gramm.total|round(2) }}</h2>
+                                <h2>Back Total Gramm: {{ back_total_gramm.total|round(2) }}</h2>
+                            </div>
+                            <div class="w-100 mx-auto d-flex justify-content-between align-items-center">
+                                <h2>Sold Total Price: {{ sold_total_price.total|round(2) }}</h2>
+                                <h2>Back Total Price: {{ back_total_price.total|round(2) }}</h2>
+                            </div>
+                            <div class="w-100 mx-auto d-flex justify-content-between align-items-center">
+                                <h2>Sold Total Count: {{ sold_total_count.total|round(2) }}</h2>
+                                <h2>Back Total Count: {{ back_total_count.total|round(2) }}</h2>
+                            </div>
                             <table class="table table-bordered">
                                 <tr>
                                     <th>#</th>
-                                    <th>Product QR</th>
                                     <th>Product Title</th>
                                     <th>Product Gramm</th>
                                     <th>Product Proba</th>
@@ -121,9 +166,6 @@ Invoice Get Page
                                         {% if product.id == invoice_product.product_id %}
                                         <tr>
                                             <td>{{ loop.index }}</td>
-                                            <td>
-                                                <img src="{{ url_for('static', filename='qr_code/' + product.qr_code) }}" alt="QR Code" style="width: 50px; height: 50px;">
-                                            </td>
                                             <td>{{ product.title }}</td>
                                             <td>{{ product.gramm }}</td>
                                             <td>{{ product.proba }}</td>
@@ -137,7 +179,7 @@ Invoice Get Page
                                 {% endfor %}
                                 {% if invoice_product_list|length == 0 %}
                                     <tr>
-                                        <td colspan="9" class="text-center">No products found.</td>
+                                        <td colspan="8" class="text-center">No products found.</td>
                                     </tr>
                                 {% endif %}
                             </table>

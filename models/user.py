@@ -1,5 +1,6 @@
+import pytz
 from models import db, login_manager
-from datetime import datetime
+from datetime import datetime, timezone
 from flask_login import UserMixin
 
 @login_manager.user_loader
@@ -18,7 +19,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(120), nullable=False)
     role = db.Column(db.String(20), nullable=False)
 
-    created_at = db.Column(db.DateTime(), default=datetime.now())
+    created_at = db.Column(db.DateTime(), default=datetime.now(timezone.utc))
 
     def __init__(self, full_name, username, phone_number, password, role):
         super().__init__()
@@ -28,4 +29,6 @@ class User(db.Model, UserMixin):
         self.chat_id = None
         self.password = password
         self.role = role
-        self.created_at = datetime.now()
+        time = datetime.now(timezone.utc)
+        time = time.astimezone(pytz.timezone('Asia/Tashkent'))
+        self.created_at = time

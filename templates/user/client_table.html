@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}
+Client List Page
+{% endblock %}
+{% block content %}
+    <section>
+        <div class="container-fluid">
+            <div class="row" style="height: 100vh;">
+                <div class="col-12">
+                    <div class="col-12 mx-auto" style="margin-top: 50px;">
+                        <table class="table table-hover table-bordered">
+                            <tr>
+                                <th>#</th>
+                                <th>Full Name</th>
+                                <th>Total</th>
+                                <th>Created At</th>
+                                <th>Phone Number</th>
+                            </tr>
+                            {% for client in client_list %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ client.full_name }}</td>
+                                    
+                                    {% set client_total = namespace(total=0) %}
+
+                                    {% for client_debt in client_debt_list %}
+                                        {% if client_debt.user_id == client.id %}
+                                            {% set client_total.total = client_total.total + client_debt.lom %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    <td>{{ (client_total.total)|round(2) }}</td>
+                                    <td>{{ client.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                    <td>{{ client.phone_number }}</td>
+                                </tr>
+                            {% endfor %}
+                            {% if client_list|length == 0 %}
+                                <tr>
+                                    <td colspan="6" class="text-center">No clients found.</td>
+                                </tr>
+                            {% endif %}
+                        </table>
+                        <a href="{{ url_for('client_list_page') }}" class="btn btn-primary w-100">Back</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
