@@ -30,16 +30,18 @@ def invoice_list_page():
 def invoice_get_page(invoice_id):
     id = request.args.get("id")
     if id is not None:
+        invoice = models.invoice.Invoice.query.filter_by(id=invoice_id).first()
+        invoice_product_list = models.invoice_product.InvoiceProduct.query.filter_by(invoice_id=invoice.id).all()
         product = models.product.Product.query.filter_by(status="INVOICE", qr_code=id).first()
-        if product is None:
+
+        invoice_product_list_l = [invoice_product.product_id for invoice_product in invoice_product_list]
+        if product is None or product.id not in invoice_product_list_l:
             flash("Product not found", "danger")
             return redirect(url_for("invoice_get_page", invoice_id=invoice_id))
         
-        product.status = "NEW"
+        product.status = "BACK"
         db.session.commit()
-
-        invoice = models.invoice.Invoice.query.filter_by(id=invoice_id).first()
-        invoice_product_list = models.invoice_product.InvoiceProduct.query.filter_by(invoice_id=invoice.id).all()
+        
         total_amount = 0
         for invoice_product in invoice_product_list:
             product = models.product.Product.query.filter_by(id=invoice_product.product_id).first()
@@ -51,15 +53,48 @@ def invoice_get_page(invoice_id):
     if invoice_get:
         user_get = models.user.User.query.filter_by(id=invoice_get.user_id, role="DEALER").first()
         invoice_product_list = models.invoice_product.InvoiceProduct.query.filter_by(invoice_id=invoice_get.id).all()
-        product_list = models.product.Product.query.all()
+        invoice_product_product_id_list = [invoice_product.product_id for invoice_product in invoice_product_list]
+        d_s_product_list = models.product.Product.query.filter(models.product.Product.id.in_(invoice_product_product_id_list)).all()
+        d_s_product_list_page = models.product.Product.query.filter(models.product.Product.id.in_(invoice_product_product_id_list))
+
         product_total_gramm = 0
         product_total_price = 0
+        for d_s_product in d_s_product_list:
+            product_total_gramm += d_s_product.gramm
+            product_total_price += d_s_product.price
+        salary_list = models.salary.Salary.query.all()
+
+        offset = request.args.get("offset")
+        if offset is None:
+            offset = 1
+        else:
+            offset = int(offset)
+
+        d_s_product_list_page_list = db.paginate(d_s_product_list_page, page=offset, per_page=25, error_out=False)
+    
+        next_url = url_for('invoice_get_page', invoice_id=invoice_get.id, offset=d_s_product_list_page_list.next_num) \
+            if d_s_product_list_page_list.has_next else None
+        prev_url = url_for('invoice_get_page', invoice_id=invoice_get.id, offset=d_s_product_list_page_list.prev_num) \
+            if d_s_product_list_page_list.has_prev else None
+        
+        return render_template("/invoice/invoice_get.html", salary_list=salary_list, d_s_product_list=d_s_product_list, product_count=len(d_s_product_list), invoice=invoice_get, user=user_get, invoice_product_list=invoice_product_list, product_total_gramm=product_total_gramm, product_total_price=product_total_price, d_s_product_list_page_list=d_s_product_list_page_list.items, next_url=next_url, prev_url=prev_url)
+    else:
+        flash("Invoice not found", "danger")
+        return redirect(url_for("invoice_list_page"))
+
+@app.route("/invoice/reset-back-product/<invoice_id>", methods=["GET"])
+@login_required
+def invoice_reset_back_product(invoice_id):
+    invoice = models.invoice.Invoice.query.filter_by(status="NEW", id=invoice_id).first()
+    if invoice:
+        invoice_product_list = models.invoice_product.InvoiceProduct.query.filter_by(invoice_id=invoice.id).all()
         for invoice_product in invoice_product_list:
-            product = models.product.Product.query.filter_by(id=invoice_product.product_id).first()
+            product = models.product.Product.query.filter_by(status="BACK", id=invoice_product.product_id).first()
             if product:
-                product_total_gramm += product.gramm
-                product_total_price += product.price
-        return render_template("/invoice/invoice_get.html", invoice=invoice_get, user=user_get, invoice_product_list=invoice_product_list, product_list=product_list, product_total_gramm=product_total_gramm, product_total_price=product_total_price)
+                product.status = "INVOICE"
+        db.session.commit()
+        flash("Product status change INVOICE!", "warning")
+        return redirect(url_for("invoice_get_page", invoice_id=invoice_id))
     else:
         flash("Invoice not found", "danger")
         return redirect(url_for("invoice_list_page"))
@@ -71,11 +106,15 @@ def invoice_complate_page(invoice_id):
     if invoice:
         invoice_product_list = models.invoice_product.InvoiceProduct.query.filter_by(invoice_id=invoice.id).all()
         for invoice_product in invoice_product_list:
-            product = models.product.Product.query.filter_by(id=invoice_product.product_id, status="INVOICE").first()
-            if product is not None:
-                product.status = "SOLD"
-            else:
-                continue
+            product_sold = models.product.Product.query.filter_by(id=invoice_product.product_id, status="INVOICE").first()
+            if product_sold is not None:
+                product_sold.status = "SOLD"
+
+            product_back = models.product.Product.query.filter_by(id=invoice_product.product_id, status="BACK").first()
+            if product_back is not None:
+                product_back.status = "NEW"
+                db.session.delete(invoice_product)
+
         invoice.status = "COMPLETED"
         db.session.commit()
         return redirect(url_for("invoice_get_page", invoice_id=invoice.id))
@@ -132,19 +171,48 @@ def invoice_product_create_page():
     id = request.args.get("id")
     if id is not None:
         product_list_with_id = session.get("product_list", [])
-        if id not in product_list_with_id:
-            product_list_with_id.append(id)
+        product = models.product.Product.query.filter_by(status="NEW", qr_code=id).first()
+        if product is not None:
+            if id not in product_list_with_id:
+                product_list_with_id.insert(0, id)
+            else:
+                flash("This product already exists!", "danger")
+        else:
+            flash("Product not found!", "danger")
     else:
         product_list_with_id = session.get("product_list", [])
 
-    product_list = [models.product.Product.query.filter_by(status="NEW", qr_code=product).first() for product in product_list_with_id]
+    product_list = models.product.Product.query.filter(models.product.Product.qr_code.in_(product_list_with_id)).all()
+    product_list_page = models.product.Product.query.filter(models.product.Product.qr_code.in_(product_list_with_id))
+
     if len(product_list) != 0:
         for i in range(len(product_list)):
             if None in product_list:
                 product_list.remove(None)
 
     product_list_with_id = ",".join(product_list_with_id)
-    return render_template("invoice/invoice_product_create.html", product_list=product_list, product_list_with_id=product_list_with_id)
+    product_total_count = len(product_list)
+    product_total_gramm = sum(product.gramm for product in product_list)
+    product_total_price = sum(product.price for product in product_list)
+    product_total_price = round(product_total_price, 2)
+    product_total_gramm = round(product_total_gramm, 2)
+    salary_list = models.salary.Salary.query.all()
+
+    offset = request.args.get("offset")
+    if offset is None:
+        offset = 1
+    else:
+        offset = int(offset)
+    
+    product_list_page_list = db.paginate(product_list_page, page=offset, per_page=25, error_out=False)
+    
+    next_url = url_for('invoice_product_create_page', offset=product_list_page_list.next_num) \
+        if product_list_page_list.has_next else None
+    prev_url = url_for('invoice_product_create_page', offset=product_list_page_list.prev_num) \
+        if product_list_page_list.has_prev else None
+
+    product_list_page_list.items.reverse()
+    return render_template("invoice/invoice_product_create.html", product_list=product_list, product_total_gramm=product_total_gramm, product_total_price=product_total_price, salary_list=salary_list, product_total_count=product_total_count, product_list_with_id=product_list_with_id, product_list_page_list=product_list_page_list.items, next_url=next_url, prev_url=prev_url)
 
 @app.route("/invoice/delete/<invoice_id>", methods=["GET", "POST"])
 @login_required

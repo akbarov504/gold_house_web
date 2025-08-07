@@ -3,7 +3,14 @@ import models.salary
 from models import db
 from flask_login import login_required
 from forms.salary_form import CreateSalaryForm, UpdateSalaryForm
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, request, jsonify
+
+@app.route("/api/salary/list", methods=["GET"])
+def salary_list_api():
+    salary_list = models.salary.Salary.query.all()
+    return jsonify({"result": [{
+        "type": salary.type
+    } for salary in salary_list]}), 200
 
 @app.route("/salary/list", methods=["GET"])
 @login_required

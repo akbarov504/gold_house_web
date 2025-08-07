@@ -63,8 +63,108 @@ Invoice Get Page
                 </div>
                 <div class="col-10">
                     <div class="col-12 mx-auto" style="margin-top: 50px;">
-                        <h1 class="display-6 text-center">Invoice Details</h1>
                         <div class="col-12 mx-auto mb-4">
+                            <h1 class="display-6 text-center mt-5">Products</h1>
+                            <div class="w-100 d-flex justify-content-between my-3">
+                                <a href="{{ url_for('invoice_reset_back_product', invoice_id=invoice.id) }}" class="btn btn-warning">Reset Back Product</a>
+                                <form class="form-inline" method="get" action="{{ url_for('invoice_get_page', invoice_id=invoice.id) }}">
+                                    <label class="sr-only" for="inlineFormInputName2">Enter id</label>
+                                    <input class="form-control mr-sm-2" type="number" placeholder="Enter ID" aria-label="Search" name="id" autofocus>
+                                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Send</button>
+                                </form>
+                            </div>
+                            {% set sold_total_gramm = namespace(total=0) %}
+                            {% set sold_total_price = namespace(total=0) %}
+                            {% set sold_total_count = namespace(total=0) %}
+
+                            {% set back_total_gramm = namespace(total=0) %}
+                            {% set back_total_price = namespace(total=0) %}
+                            {% set back_total_count = namespace(total=0) %}
+
+                          
+                            {% for d_s_product in d_s_product_list %}
+                                {% if d_s_product.status == "BACK" %}
+                                    {% set back_total_gramm.total = back_total_gramm.total + d_s_product.gramm %}
+                                    {% set back_total_price.total = back_total_price.total + d_s_product.price %}
+                                    {% set back_total_count.total = back_total_count.total + 1 %}
+                                {% elif d_s_product.status == "SOLD" %}
+                                    {% set sold_total_gramm.total = sold_total_gramm.total + d_s_product.gramm %}
+                                    {% set sold_total_price.total = sold_total_price.total + d_s_product.price %}
+                                    {% set sold_total_count.total = sold_total_count.total + 1 %}
+                                {% endif %}     
+                            {% endfor %}
+                            <div class="w-100 mx-auto d-flex justify-content-between align-items-center">
+                                <h2>Sold Total Gramm: {{ sold_total_gramm.total|round(2) }}</h2>
+                                <h2>Back Total Gramm: {{ back_total_gramm.total|round(2) }}</h2>
+                            </div>
+                            <div class="w-100 mx-auto d-flex justify-content-between align-items-center">
+                                <h2>Sold Total Price: {{ sold_total_price.total|round(2) }}</h2>
+                                <h2>Back Total Price: {{ back_total_price.total|round(2) }}</h2>
+                            </div>
+                            <div class="w-100 mx-auto d-flex justify-content-between align-items-center">
+                                <h2>Sold Total Count: {{ sold_total_count.total|round(2) }}</h2>
+                                <h2>Back Total Count: {{ back_total_count.total|round(2) }}</h2>
+                            </div>
+                            <hr>
+                            {% for salary in salary_list %}
+                                {% set salary_total_gramm = namespace(total=0) %}
+                                {% set salary_total_price = namespace(total=0) %}
+                                {% for d_s_product in d_s_product_list %}
+                                    {% if salary.type == d_s_product.type %}
+                                        {% set salary_total_gramm.total = salary_total_gramm.total + d_s_product.gramm %}
+                                        {% set salary_total_price.total = salary_total_price.total + d_s_product.price %}
+                                    {% endif %}
+                                {% endfor %}
+                                <div class="w-100 mx-auto d-flex justify-content-between align-items-center">
+                                    <h2>Total Gramm {{ salary.type }}: {{ salary_total_gramm.total|round(2) }}</h2>
+                                    <h2>Total Price {{ salary.type }}: {{ salary_total_price.total|round(2) }}</h2>
+                                </div>
+                            {% endfor %}
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Product Title</th>
+                                    <th>Product Gramm</th>
+                                    <th>Product Proba</th>
+                                    <th>Product Type</th>
+                                    <th>Product Number</th>
+                                    <th>Product Status</th>
+                                    <th>Product Price</th>
+                                </tr>
+                                {% for product in d_s_product_list_page_list %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ product.title }}</td>
+                                        <td>{{ product.gramm }}</td>
+                                        <td>{{ product.proba }}</td>
+                                        <td>{{ product.type }}</td>
+                                        <td>{{ product.number }}</td>
+                                        <td>{{ product.status }}</td>
+                                        <td>{{ product.price }}</td>
+                                    </tr>
+                                {% endfor %}
+                                {% if d_s_product_list_page_list|length == 0 %}
+                                    <tr>
+                                        <td colspan="8" class="text-center">No products found.</td>
+                                    </tr>
+                                {% endif %}
+                            </table>
+                            <nav>
+                                <ul class="pagination pagination">
+                                    {% if prev_url %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ prev_url }}">Prev</a>
+                                        </li>
+                                    {% endif %}
+
+                                    {% if next_url %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ next_url }}">Next</a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                            <h1 class="display-6 text-center mt-5">Invoice Details</h1>
                             <table class="table table-bordered">
                                 <tr>
                                     <th>Invoice Number</th>
@@ -104,84 +204,6 @@ Invoice Get Page
                                         <a href="{{ url_for('invoice_complate_page', invoice_id=invoice.id) }}" class="btn btn-success">Complate</a>
                                     </td>
                                 </tr>
-                            </table>
-                            <h1 class="display-6 text-center mt-5">Products</h1>
-                            <div class="w-100">
-                                <form class="form-inline my-4 float-right" method="get" action="{{ url_for('invoice_get_page', invoice_id=invoice.id) }}">
-                                    <label class="sr-only" for="inlineFormInputName2">Enter id</label>
-                                    <input class="form-control mr-sm-2" type="number" placeholder="Enter ID" aria-label="Search" name="id" autofocus>
-                                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Send</button>
-                                </form>
-                            </div>
-                            {% set sold_total_gramm = namespace(total=0) %}
-                            {% set sold_total_price = namespace(total=0) %}
-                            {% set sold_total_count = namespace(total=0) %}
-
-                            {% set back_total_gramm = namespace(total=0) %}
-                            {% set back_total_price = namespace(total=0) %}
-                            {% set back_total_count = namespace(total=0) %}
-
-                            {% for invoice_product in invoice_product_list %}
-                                {% if invoice_product.invoice_id == invoice.id %}
-                                    {% for product in product_list %}
-                                        {% if product.id == invoice_product.product_id %}
-                                            {% if product.status == "NEW" %}
-                                                {% set back_total_gramm.total = back_total_gramm.total + product.gramm %}
-                                                {% set back_total_price.total = back_total_price.total + product.price %}
-                                                {% set back_total_count.total = back_total_count.total + 1 %}
-                                            {% elif product.status == "SOLD" %}
-                                                {% set sold_total_gramm.total = sold_total_gramm.total + product.gramm %}
-                                                {% set sold_total_price.total = sold_total_price.total + product.price %}
-                                                {% set sold_total_count.total = sold_total_count.total + 1 %}
-                                            {% endif %}
-                                        {% endif %}
-                                    {% endfor %}
-                                {% endif %}
-                            {% endfor %}
-                            <div class="w-100 mx-auto d-flex justify-content-between align-items-center">
-                                <h2>Sold Total Gramm: {{ sold_total_gramm.total|round(2) }}</h2>
-                                <h2>Back Total Gramm: {{ back_total_gramm.total|round(2) }}</h2>
-                            </div>
-                            <div class="w-100 mx-auto d-flex justify-content-between align-items-center">
-                                <h2>Sold Total Price: {{ sold_total_price.total|round(2) }}</h2>
-                                <h2>Back Total Price: {{ back_total_price.total|round(2) }}</h2>
-                            </div>
-                            <div class="w-100 mx-auto d-flex justify-content-between align-items-center">
-                                <h2>Sold Total Count: {{ sold_total_count.total|round(2) }}</h2>
-                                <h2>Back Total Count: {{ back_total_count.total|round(2) }}</h2>
-                            </div>
-                            <table class="table table-bordered">
-                                <tr>
-                                    <th>#</th>
-                                    <th>Product Title</th>
-                                    <th>Product Gramm</th>
-                                    <th>Product Proba</th>
-                                    <th>Product Type</th>
-                                    <th>Product Number</th>
-                                    <th>Product Status</th>
-                                    <th>Product Price</th>
-                                </tr>
-                                {% for invoice_product in invoice_product_list %}
-                                    {% for product in product_list %}
-                                        {% if product.id == invoice_product.product_id %}
-                                        <tr>
-                                            <td>{{ loop.index }}</td>
-                                            <td>{{ product.title }}</td>
-                                            <td>{{ product.gramm }}</td>
-                                            <td>{{ product.proba }}</td>
-                                            <td>{{ product.type }}</td>
-                                            <td>{{ product.number }}</td>
-                                            <td>{{ product.status }}</td>
-                                            <td>{{ product.price }}</td>
-                                        </tr>
-                                        {% endif %}
-                                    {% endfor %}
-                                {% endfor %}
-                                {% if invoice_product_list|length == 0 %}
-                                    <tr>
-                                        <td colspan="8" class="text-center">No products found.</td>
-                                    </tr>
-                                {% endif %}
                             </table>
                             <a href="{{ url_for('invoice_list_page') }}" class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover btn-primary" style="font-size: 20px;">Back</a>
                         </div>

@@ -12,14 +12,14 @@ Invoice Print Page
                             <div id="section-to-print" class="d-block my-3 py-3 border p-2">
                                 <h1 class="text-center">Gold House</h1>
                                 <hr>
-                                <h6><b>Invoice ID</b><span class="float-right">{{ invoice.invoice_number }}</span></h6>
-                                <p><b>Total Price</b><span class="float-right">{{ product_total_price|round(2) }}</span></p>
-                                <p><b>Product Total Count</b><span class="float-right">{{ invoice_product_list|length }}</span></p>
-                                <p><b>Product Total Gramm</b><span class="float-right">{{ product_total_gramm|round(2) }}</span></p>
-                                <p><b>Dealer Name</b><span class="float-right">{{ user.full_name }}</span></p>
-                                <p><b>Dealer Phone</b><span class="float-right">{{ user.phone_number }}</span></p>
+                                <h6><b>ID</b><span class="float-right">{{ invoice.invoice_number }}</span></h6>
+                                <p><b>Jami Narxi</b><span class="float-right">{{ product_total_price|round(2) }}</span></p>
+                                <p><b>Jami Maxsulot Soni</b><span class="float-right">{{ invoice_product_list|length }}</span></p>
+                                <p><b>Jami Maxsulot Grami</b><span class="float-right">{{ product_total_gramm|round(2) }}</span></p>
+                                <p><b>Diller Ismi</b><span class="float-right">{{ user.full_name }}</span></p>
+                                <p><b>Diller Raqami</b><span class="float-right">{{ user.phone_number }}</span></p>
                                 <hr>
-                                <h4 class="text-center">Type List</h4>
+                                <h4 class="text-center">Madellar Ro'yxati</h4>
                                 <hr>
                                 {% for salary in salary_list %}
                                     {% set salary_total_gramm = namespace(total=0) %}
@@ -34,13 +34,13 @@ Invoice Print Page
                                             {% endif %}
                                         {% endfor %}
                                     {% endfor %}
-                                    <p><b>Type</b><span class="float-right">{{ salary.type }}</span></p>
-                                    <p><b>Total Gramm</b><span class="float-right">{{ salary_total_gramm.total|round(2) }}</span></p>
-                                    <p><b>Total Price</b><span class="float-right">{{ salary_total_price.total|round(2) }}</span></p>
-                                    <p><b>Total Count</b><span class="float-right">{{ total_count.total|round(2) }}</span></p>
+                                    <p><b>Madel</b><span class="float-right">{{ salary.type }}</span></p>
+                                    <p><b>Jami Grami</b><span class="float-right">{{ salary_total_gramm.total|round(2) }}</span></p>
+                                    <p><b>Jami Narxi</b><span class="float-right">{{ salary_total_price.total|round(2) }}</span></p>
+                                    <p><b>Jami Soni</b><span class="float-right">{{ total_count.total|round(2) }}</span></p>
                                     <hr>
                                 {% endfor %}
-                                <p class="text-center text-small text-muted">Created At | {{ invoice.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                                <p class="text-center text-small text-muted">Yaratilgan Vaqti | {{ invoice.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
                             </div>
                             <button class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover btn-primary" style="font-size: 20px;" onclick="window.print()">Print</button>
                             <a href="{{ url_for('invoice_list_page') }}" class="w-100 rounded py-2 text-center text-white text-decoration-none btn button-hover btn-primary mt-2" style="font-size: 20px;">Back</a>

@@ -63,6 +63,25 @@ Invoice Product Create Page
             </div>
             <div class="col-10">
                 <div class="col-12 mx-auto" style="margin-top: 50px;">
+                    <div class="w-100 mx-auto d-flex justify-content-between align-items-center">
+                        <h2>Total Gramm: {{ product_total_gramm }}</h2>
+                        <h2>Total Count: {{ product_total_count }}</h2>
+                        <h2>Total Price: {{ product_total_price }}</h2>
+                    </div>
+                    {% for salary in salary_list %}
+                        {% set salary_total_gramm = namespace(total=0) %}
+                        {% set salary_total_price = namespace(total=0) %}
+                        {% for product in product_list %}
+                            {% if salary.type == product.type %}
+                                {% set salary_total_gramm.total = salary_total_gramm.total + product.gramm %}
+                                {% set salary_total_price.total = salary_total_price.total + product.price %}
+                            {% endif %}
+                        {% endfor %}
+                        <div class="w-100 mx-auto d-flex justify-content-between align-items-center">
+                            <h2>Total Gramm {{ salary.type }}: {{ salary_total_gramm.total|round(2) }}</h2>
+                            <h2>Total Price {{ salary.type }}: {{ salary_total_price.total|round(2) }}</h2>
+                        </div>
+                    {% endfor %}
                     <div class="w-100 mx-auto my-4">
                         <form class="form-inline my-4 float-right" method="get" action="{{ url_for('invoice_product_create_page') }}">
                             <label class="sr-only" for="inlineFormInputName2">Enter id</label>
@@ -84,7 +103,7 @@ Invoice Product Create Page
                                 <th>Price</th>
                                 <th>
                                     Action
-                                    {% if product_list|length == 0 %}
+                                    {% if product_list_page_list|length == 0 %}
                                     <a href="{{ url_for('product_list_page') }}"
                                         class="btn btn-primary float-right">Add Product</a>
                                     {% else %}
@@ -93,7 +112,7 @@ Invoice Product Create Page
                                     {% endif %}
                                 </th>
                             </tr>
-                            {% for product in product_list %}
+                            {% for product in product_list_page_list %}
                             <tr>
                                 <td>{{ loop.index }}</td>
                                 <td>{{ product.title }}</td>
@@ -103,15 +122,30 @@ Invoice Product Create Page
                                 <td>{{ product.number }}</td>
                                 <td>{{ product.size }}</td>
                                 <td>{{ product.status }}</td>
-                                <td>{{ product.price }}</td>
+                                <td colspan="2">{{ product.price }}</td>
                             </tr>
                             {% endfor %}
-                            {% if product_list|length == 0 %}
+                            {% if product_list_page_list|length == 0 %}
                             <tr>
                                 <td colspan="9" class="text-center">No products found.</td>
                             </tr>
                             {% endif %}
                         </table>
+                        <nav>
+                            <ul class="pagination pagination">
+                                {% if prev_url %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ prev_url }}">Prev</a>
+                                    </li>
+                                {% endif %}
+
+                                {% if next_url %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ next_url }}">Next</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
                     </form>
                 </div>
             </div>

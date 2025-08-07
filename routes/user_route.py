@@ -7,7 +7,7 @@ import models.client_debt
 from datetime import date
 from sqlalchemy import or_
 from flask_login import login_required
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, request, jsonify
 from forms.user_form import CreateClientForm, UpdateClientForm, CreateDealerForm, UpdateDealerForm
 
 @app.route("/client/list", methods=["GET"])
@@ -120,6 +120,12 @@ def client_get_page(client_id):
 def dealer_list_page():
     dealer_list = models.user.User.query.filter_by(role="DEALER").order_by(models.user.User.created_at.desc()).all()
     return render_template("user/dealer_list.html", dealer_list=dealer_list)
+
+@app.route("/api/dealer/list", methods=["GET"])
+def api_dealer_list():
+    dealer_list = models.user.User.query.filter_by(role="DEALER").all()
+    dealer_list = [dealer.to_dict_from_api() for dealer in dealer_list]
+    return jsonify(dealer_list), 200
 
 @app.route("/dealer/get/<dealer_id>", methods=["GET"])
 @login_required

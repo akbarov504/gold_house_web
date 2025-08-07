@@ -91,61 +91,12 @@ Product List Page
                 {% endif %}
                 <div class="col-10">
                     <div class="w-100 mx-auto" style="margin-top: 50px;">
-                        <div class="w-100 mx-auto d-flex justify-content-between align-items-center">
-                            <h2>Total Gramm: {{ product_total_gramm }}</h2>
-                            <h2>Total Count: {{ product_total_count }}</h2>
-                            <h2>Total Price: {{ product_total_price }}</h2>
-                        </div>
-                        {% for salary in salary_list %}
-                            {% set salary_total_gramm = namespace(total=0) %}
-                            {% set salary_total_price = namespace(total=0) %}
-                            {% for product in product_list %}
-                                {% if salary.type == product.type %}
-                                    {% set salary_total_gramm.total = salary_total_gramm.total + product.gramm %}
-                                    {% set salary_total_price.total = salary_total_price.total + product.price %}
-                                {% endif %}
-                            {% endfor %}
-                            <div class="w-100 mx-auto d-flex justify-content-between align-items-center">
-                                <h2>Total Gramm {{ salary.type }}: {{ salary_total_gramm.total|round(2) }}</h2>
-                                <h2>Total Price {{ salary.type }}: {{ salary_total_price.total|round(2) }}</h2>
-                            </div>
-                        {% endfor %}
-                        <div class="w-100 mx-auto">
-                            <form class="form-inline my-4 float-left" method="get" action="{{ url_for('product_list_page', query=name) }}">
-                                <select name="select_type" id="select_type" class="form-control mr-sm-2" onchange="this.form.submit()">
-                                    <option value="ALL" selected>Select Type</option>
-                                    <option value="ALL">ALL</option>
-                                    <option value="NEW">NEW</option>
-                                    <option value="INVOICE">INVOICE</option>
-                                    <option value="BACK">BACK</option>
-                                    <option value="SOLD">SOLD</option>
-                                </select>
-                            </form>
-                            <form class="form-inline my-4 float-left" method="get" action="{{ url_for('product_list_page', query=name) }}">
-                                <div class="input-group date" id="datepicker">
-                                    <input type="datetime-local" class="form-control mr-sm-2" name="search-date">
-                                    <div class="input-group-addon">
-                                        <span class="glyphicon glyphicon-th"></span>
-                                    </div>
-                                </div>
-                                <button class="btn btn-outline-success my-2 my-sm-0 mr-2" type="submit">Search Date</button>
-                            </form>
-                            <form class="form-inline my-4 float-left" method="get" action="{{ url_for('product_list_page', query=name) }}">
-                                <label class="sr-only" for="inlineFormInputName2">Search Gramm</label>
-                                <input class="form-control mr-sm-2" type="search" placeholder="Search Gramm" aria-label="Search" name="search-gramm">
-                                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search Gramm</button>
-                            </form>
-                            <form class="form-inline my-4 float-right ml-2" method="get" action="{{ url_for('product_list_page', query=name) }}">
-                                <label class="sr-only" for="inlineFormInputName2">Search</label>
-                                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search">
-                                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                            </form>
-                            <form class="form-inline mb-4 float-left" method="get" action="{{ url_for('product_create_page') }}">
+                        <div class="w-100 mx-auto"> 
+                            <form class="form-inline mb-4 float-left" method="get" action="{{ url_for('product_delete_scan_del_page') }}">
                                 <label class="sr-only" for="inlineFormInputName2">Enter id</label>
                                 <input class="form-control mr-sm-2" type="number" placeholder="Enter ID" aria-label="Search" name="id" autofocus>
                                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Send</button>
                             </form>
-                            <a href="{{ url_for('product_check_page') }}" class="btn btn-primary ml-2">Check Product</a>
                         </div>
                         <table class="table table-hover table-bordered">
                             <tr>
@@ -159,11 +110,6 @@ Product List Page
                                 <th>Status</th>
                                 <th>Price</th>
                                 <th>Created At</th>
-                                <th>
-                                    <a href="{{ url_for('product_delete_sold_page') }}" class="btn btn-danger">Sold Delete</a>
-                                    <a href="{{ url_for('product_delete_new_page') }}" class="btn btn-danger">New Delete</a>
-                                    <a href="{{ url_for('product_delete_scan_page') }}" class="btn btn-danger">Scan Delete</a>
-                                </th>
                             </tr>
                             {% for product in product_list_page_list %}
                                 <tr>
@@ -177,15 +123,11 @@ Product List Page
                                     <td>{{ product.status }}</td>
                                     <td>{{ product.price }}</td>
                                     <td>{{ product.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-                                    <td>
-                                        <a href="{{ url_for('product_delete_page', product_id=product.id) }}" class="btn btn-danger">Delete</a>
-                                        <a href="{{ url_for('product_get_page', product_id=product.id) }}" class="btn btn-primary">Get</a>
-                                    </td>
                                 </tr>
                             {% endfor %}
                             {% if product_list_page_list|length == 0 %}
                                 <tr>
-                                    <td colspan="11" class="text-center">No products found.</td>
+                                    <td colspan="10" class="text-center">No products found.</td>
                                 </tr>
                             {% endif %}
                         </table>

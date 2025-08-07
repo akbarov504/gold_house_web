@@ -256,7 +256,7 @@ Bosh Sahifa
                                         <a href="{{ url_for('add_qr_code') }}" class="btn btn-success float-right">Add</a>
                                     </th>
                                 </tr>
-                                {% for qr_code in qr_code_list %}
+                                {% for qr_code in qr_code_page_list %}
                                     <tr>
                                         <td>{{ loop.index }}</td>
                                         <td>
@@ -275,12 +275,27 @@ Bosh Sahifa
                                         </td>
                                     </tr>
                                 {% endfor %}
-                                {% if qr_code_list|length == 0 %}
+                                {% if qr_code_page_list|length == 0 %}
                                     <tr>
                                         <td colspan="10" class="text-center">No products found.</td>
                                     </tr>
                                 {% endif %}
                             </table>
+                            <nav>
+                                <ul class="pagination pagination">
+                                    {% if prev_url %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ prev_url }}">Prev</a>
+                                        </li>
+                                    {% endif %}
+
+                                    {% if next_url %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ next_url }}">Next</a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
                         </div>
                     </div>
                 </div>

@@ -32,3 +32,13 @@ class User(db.Model, UserMixin):
         time = datetime.now(timezone.utc)
         time = time.astimezone(pytz.timezone('Asia/Tashkent'))
         self.created_at = time
+    
+    def to_dict_from_api(self):
+        dict_user = {
+            "id": self.id,
+            "full_name": self.full_name,
+            "phone_number": self.phone_number,
+            "username": self.username,
+            "password": self.password
+        }
+        return dict_user

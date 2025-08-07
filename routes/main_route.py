@@ -80,8 +80,21 @@ def home_page():
     client_total_debt = round(client_total_debt, 2)
 
     total = consumption_total_amount + product_new_total_amount + product_invoice_total_amount + client_total_debt
-    qr_code_list = models.qr_code.QRCode.query.order_by(models.qr_code.QRCode.created_at.desc()).all()
-    return render_template("index.html", labels=labels, data=data, exchange_data=EXCHANGE_DATA, product_count=len(product_list), product_total_price=product_total_price, main_system_list=main_system_list, consumption_total_amount=consumption_total_amount, product_new_total_amount=product_new_total_amount, product_invoice_total_amount=product_invoice_total_amount, client_total_debt=client_total_debt, room_list=room_list, total=total, qr_code_list=qr_code_list)
+
+    offset = request.args.get("offset")
+    if offset is None:
+        offset = 1
+    else:
+        offset = int(offset)
+
+    qr_code_list = models.qr_code.QRCode.query.order_by(models.qr_code.QRCode.created_at.desc())
+    qr_code_page_list = db.paginate(qr_code_list, page=offset, per_page=25, error_out=False)
+    
+    next_url = url_for('home_page', offset=qr_code_page_list.next_num) \
+        if qr_code_page_list.has_next else None
+    prev_url = url_for('home_page', offset=qr_code_page_list.prev_num) \
+        if qr_code_page_list.has_prev else None
+    return render_template("index.html", labels=labels, data=data, exchange_data=EXCHANGE_DATA, product_count=len(product_list), product_total_price=product_total_price, main_system_list=main_system_list, consumption_total_amount=consumption_total_amount, product_new_total_amount=product_new_total_amount, product_invoice_total_amount=product_invoice_total_amount, client_total_debt=client_total_debt, room_list=room_list, total=total, qr_code_page_list=qr_code_page_list.items, next_url=next_url, prev_url=prev_url)
 
 @app.route("/exchange/dollor", methods=['POST'])
 @login_required
@@ -113,7 +126,7 @@ def exchange_gold():
 @login_required
 def add_qr_code():
     form = CreateQRCodeForm()
-    title_list = ["КАЛЬЦО", "СЕРЬГИ", "КУЛОН"]
+    title_list = ["КОЛЬЦО", "СЕРЬГИ", "КУЛОН"]
     type_list = [s.type for s in models.salary.Salary.query.all()]
     form.title.choices = title_list
     form.type.choices = type_list
